@@ -231,6 +231,7 @@ const titleRevealRound = {
   hint_count: 4,
   next_hint_at: Date.now() / 1000 + 5,
   allowed_typos: 1,
+  artist_bonus: false,
   solved_count: 0,
 } satisfies MusicQuizTitleRevealRound;
 
@@ -239,6 +240,7 @@ const titleRevealPlayerState = {
   answer_type: "hint_text",
   hint_speed: "normal",
   typo_tolerance: "normal",
+  artist_bonus_mode: "off",
   phase: "answering",
   name: "Title Reveal",
   include_similar_music: false,

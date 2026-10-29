@@ -1,3 +1,4 @@
+import HintTextArtistBonus from "@/components/music-quiz/answer-types/hint-text/HintTextArtistBonus.vue";
 import HintTextMask from "@/components/music-quiz/answer-types/hint-text/HintTextMask.vue";
 import HintTextPlayerAnswer from "@/components/music-quiz/answer-types/hint-text/HintTextPlayerAnswer.vue";
 import HintTextPresentAnswer from "@/components/music-quiz/answer-types/hint-text/HintTextPresentAnswer.vue";
@@ -24,6 +25,7 @@ const currentRound = {
   hint_count: 4,
   next_hint_at: Date.now() / 1000 + 5,
   allowed_typos: 1,
+  artist_bonus: false,
   solved_count: 1,
 } satisfies MusicQuizTitleRevealRound;
 
@@ -35,6 +37,7 @@ function playerState(
     answer_type: "hint_text",
     hint_speed: "normal",
     typo_tolerance: "normal",
+    artist_bonus_mode: "free_text",
     phase: "answering",
     name: "Quiz",
     include_similar_music: false,
@@ -107,7 +110,7 @@ describe("hint-text adapters", () => {
     await wrapper.get("form").trigger("submit");
 
     expect(wrapper.emitted("submit")).toEqual([
-      [{ answer_type: "hint_text", text: "hey jude" }],
+      [{ answer_type: "hint_text", action: "guess_title", text: "hey jude" }],
     ]);
     expect(input.element.value).toBe("");
     expect(document.activeElement).toBe(input.element);
@@ -187,5 +190,99 @@ describe("hint-text adapters", () => {
     expect(wrapper.text()).toContain("1 / 2");
     expect(wrapper.text()).not.toContain("Hey Jude");
     wrapper.unmount();
+  });
+
+  it("shows the first-guess bonus once solved", () => {
+    const wrapper = mount(HintTextPlayerAnswer, {
+      props: {
+        state: playerState({
+          solved: true,
+          solution: "Hey Jude",
+          points: 1200,
+          first_bonus: 200,
+        }),
+        currentRound,
+        busy: false,
+      },
+    });
+
+    expect(wrapper.get("[data-testid='hint-text-first-bonus']").text()).toBe(
+      "providers.music_quiz.title_reveal_first_bonus:200",
+    );
+    expect(
+      wrapper.find("[data-testid='hint-text-artist-bonus']").exists(),
+    ).toBe(false);
+    wrapper.unmount();
+  });
+
+  it("offers the artist bonus after the title and forwards guesses", async () => {
+    const wrapper = mount(HintTextPlayerAnswer, {
+      props: {
+        state: playerState({
+          solved: true,
+          solution: "Hey Jude",
+          points: 900,
+          artist_bonus: { done: false },
+        }),
+        currentRound: { ...currentRound, artist_bonus: true },
+        busy: false,
+      },
+    });
+
+    await wrapper
+      .get("[data-testid='hint-text-artist-input']")
+      .setValue(" The Beatles ");
+    await wrapper
+      .get("[data-testid='hint-text-artist-bonus']")
+      .trigger("submit");
+    await wrapper.get("[data-testid='hint-text-artist-skip']").trigger("click");
+
+    expect(wrapper.emitted("submit")).toEqual([
+      [
+        {
+          answer_type: "hint_text",
+          action: "guess_artist",
+          text: "The Beatles",
+        },
+      ],
+      [{ answer_type: "hint_text", action: "skip_artist" }],
+    ]);
+    wrapper.unmount();
+  });
+
+  it("shows the artist bonus result once answered", () => {
+    const correct = mount(HintTextArtistBonus, {
+      props: {
+        bonus: {
+          done: true,
+          guess: "beatles",
+          correct: true,
+          points: 250,
+          artist: "The Beatles",
+        },
+        busy: false,
+      },
+    });
+    const skipped = mount(HintTextArtistBonus, {
+      props: {
+        bonus: {
+          done: true,
+          guess: null,
+          correct: false,
+          points: 0,
+          artist: "The Beatles",
+        },
+        busy: false,
+      },
+    });
+
+    expect(correct.get("[data-testid='hint-text-artist-result']").text()).toBe(
+      "providers.music_quiz.title_reveal_artist_correct:The Beatles,250",
+    );
+    expect(skipped.get("[data-testid='hint-text-artist-result']").text()).toBe(
+      "providers.music_quiz.title_reveal_artist_skipped:The Beatles",
+    );
+    correct.unmount();
+    skipped.unmount();
   });
 });

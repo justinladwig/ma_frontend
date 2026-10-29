@@ -76,6 +76,27 @@
           </SelectContent>
         </Select>
       </Field>
+
+      <Field
+        orientation="horizontal"
+        class="items-center justify-between rounded-lg border p-4 sm:col-span-2"
+      >
+        <div class="flex flex-col gap-1">
+          <FieldLabel for="title-reveal-artist-bonus">
+            {{ $t("providers.music_quiz.title_reveal_artist_bonus_setting") }}
+          </FieldLabel>
+          <FieldDescription>
+            {{
+              $t("providers.music_quiz.title_reveal_artist_bonus_setting_help")
+            }}
+          </FieldDescription>
+        </div>
+        <Switch
+          id="title-reveal-artist-bonus"
+          v-model="artistBonus"
+          data-testid="title-reveal-artist-bonus"
+        />
+      </Field>
     </div>
 
     <slot name="before-sources"></slot>
@@ -104,7 +125,7 @@ import type {
   MusicQuizSetupAdapterSlots,
 } from "@/components/music-quiz/adapter_contracts";
 import { Button } from "@/components/ui/button";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import {
   NumberField,
   NumberFieldContent,
@@ -119,6 +140,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import type {
   MusicQuizHintSpeed,
   MusicQuizTitleRevealConfig,
@@ -149,6 +171,7 @@ const roundCount = ref(5);
 const answerDuration = ref(DEFAULT_SECONDS);
 const hintSpeed = ref<MusicQuizHintSpeed>("normal");
 const typoTolerance = ref<MusicQuizTypoTolerance>("normal");
+const artistBonus = ref(true);
 const sourceUris = ref<string[]>([]);
 const canCreate = computed(() => sourceUris.value.length > 0);
 const hintSpeedOptions = computed(() => getMusicQuizHintSpeedOptions());
@@ -172,6 +195,7 @@ function create() {
     answer_duration: answerDuration.value,
     hint_speed: hintSpeed.value,
     typo_tolerance: typoTolerance.value,
+    artist_bonus_mode: artistBonus.value ? "free_text" : "off",
     source_uris: sourceUris.value,
     include_similar_music: props.includeSimilarMusic,
   };

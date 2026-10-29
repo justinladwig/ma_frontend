@@ -19,6 +19,14 @@
       <span v-if="state.you.points !== undefined" class="text-primary">
         {{ $t("providers.music_quiz.title_reveal_points", [state.you.points]) }}
       </span>
+      <Badge v-if="state.you.first_bonus" data-testid="hint-text-first-bonus">
+        <Trophy class="size-3" />
+        {{
+          $t("providers.music_quiz.title_reveal_first_bonus", [
+            state.you.first_bonus,
+          ])
+        }}
+      </Badge>
     </div>
 
     <form v-else class="flex flex-col gap-2" @submit.prevent="submit">
@@ -63,6 +71,13 @@
       </p>
     </form>
 
+    <HintTextArtistBonus
+      v-if="state.you.solved && state.you.artist_bonus"
+      :bonus="state.you.artist_bonus"
+      :busy="busy"
+      @submit="emit('submit', $event)"
+    />
+
     <ul
       v-if="wrongGuesses.length"
       class="flex flex-col gap-1"
@@ -102,6 +117,7 @@ import type {
   MusicQuizPlayerAnswerAdapterEmits,
   MusicQuizPlayerAnswerAdapterProps,
 } from "@/components/music-quiz/adapter_contracts";
+import HintTextArtistBonus from "@/components/music-quiz/answer-types/hint-text/HintTextArtistBonus.vue";
 import HintTextHintStatus from "@/components/music-quiz/answer-types/hint-text/HintTextHintStatus.vue";
 import HintTextMask from "@/components/music-quiz/answer-types/hint-text/HintTextMask.vue";
 import HintTextProgress from "@/components/music-quiz/answer-types/hint-text/HintTextProgress.vue";
@@ -115,7 +131,7 @@ import type {
 } from "@/composables/music-quiz/useMusicQuiz";
 import { getMusicQuizRoundPlayers } from "@/helpers/music_quiz";
 import { $t } from "@/plugins/i18n";
-import { PartyPopper, Send, X } from "@lucide/vue";
+import { PartyPopper, Send, Trophy, X } from "@lucide/vue";
 import { computed, ref } from "vue";
 
 // mirrors the server-side guess limits in answer_types/hint_text.py
@@ -155,7 +171,7 @@ const wrongGuesses = computed(() =>
 function submit() {
   const text = guess.value.trim();
   if (!text || !canSubmit.value) return;
-  emit("submit", { answer_type: "hint_text", text });
+  emit("submit", { answer_type: "hint_text", action: "guess_title", text });
   // clear and keep focus so players can keep guessing without tapping again
   guess.value = "";
   inputRef.value?.focus();

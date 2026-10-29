@@ -59,16 +59,30 @@ export type MusicQuizTimelineSubmission =
   | MusicQuizTimelineBonusChoiceSubmission
   | MusicQuizTimelineFinishSubmission;
 
+export interface MusicQuizHintTextGuessSubmission {
+  answer_type: "hint_text";
+  action: "guess_title" | "guess_artist";
+  text: string;
+}
+
+export interface MusicQuizHintTextSkipArtistSubmission {
+  answer_type: "hint_text";
+  action: "skip_artist";
+}
+
+export type MusicQuizHintTextSubmission =
+  MusicQuizHintTextGuessSubmission | MusicQuizHintTextSkipArtistSubmission;
+
+// Title Reveal only offers the artist bonus as free text
+export type MusicQuizTitleRevealArtistBonusMode = "off" | "free_text";
+
 export type MusicQuizAnswerSubmissionMap = {
   multiple_choice: {
     answer_type: "multiple_choice";
     suggestion_id: string;
   };
   timeline: MusicQuizTimelineSubmission;
-  hint_text: {
-    answer_type: "hint_text";
-    text: string;
-  };
+  hint_text: MusicQuizHintTextSubmission;
 };
 
 export type MusicQuizAnswerType = keyof MusicQuizAnswerSubmissionMap;
@@ -161,6 +175,7 @@ interface MusicQuizTitleRevealStateBase extends MusicQuizStateIdentity {
   answer_type: "hint_text";
   hint_speed: MusicQuizHintSpeed;
   typo_tolerance: MusicQuizTypoTolerance;
+  artist_bonus_mode: MusicQuizTitleRevealArtistBonusMode;
   round_count: number;
   answer_duration: number;
   mode: MusicQuizMode;
@@ -380,7 +395,10 @@ export interface MusicQuizTimelinePlayerLastAnswer {
 
 export interface MusicQuizHintTextPlayerLastAnswer {
   correct: boolean;
+  // total including the first-guess and artist bonuses
   points: number;
+  first_bonus: number;
+  artist_correct: boolean;
   attempt_count: number;
 }
 
@@ -413,12 +431,25 @@ export interface MusicQuizHintTextGuess {
   close: boolean;
 }
 
+export interface MusicQuizHintTextArtistBonus {
+  done: boolean;
+  // set once the bonus is answered or skipped; guess stays null when skipped
+  guess?: string | null;
+  correct?: boolean;
+  points?: number;
+  artist?: string | null;
+}
+
 export interface MusicQuizHintTextYou extends MusicQuizYouBase {
   guesses?: MusicQuizHintTextGuess[];
   attempts_left?: number;
   solved?: boolean;
   solution?: string;
+  // total including the first-guess and artist bonuses
   points?: number;
+  title_points?: number;
+  first_bonus?: number;
+  artist_bonus?: MusicQuizHintTextArtistBonus;
 }
 
 export interface MusicQuizTimelineYou extends MusicQuizYouBase {
@@ -614,6 +645,7 @@ export interface MusicQuizHintTextRound extends MusicQuizRoundBase {
   next_hint_at: number | null;
   allowed_typos: number;
   solved_count: number;
+  artist_bonus: boolean;
   solution?: string;
 }
 
@@ -632,6 +664,17 @@ export interface MusicQuizHintTextHostAttempt {
   close: boolean;
 }
 
+export interface MusicQuizHintTextHostSolve {
+  solved_at: number;
+  points: number;
+  first_bonus: number;
+  artist_done: boolean;
+  artist_guess: string | null;
+  artist_correct: boolean;
+  artist_points: number;
+  total_points: number;
+}
+
 export interface MusicQuizTitleRevealHostRound {
   round_index: number;
   answer_label: string;
@@ -642,7 +685,8 @@ export interface MusicQuizTitleRevealHostRound {
   hint_count: number;
   hint_times: number[];
   attempts: Record<string, MusicQuizHintTextHostAttempt[]>;
-  solves: Record<string, { solved_at: number; points: number }>;
+  artist_answers: string[];
+  solves: Record<string, MusicQuizHintTextHostSolve>;
   track_uri: string | null;
   question: null;
   image_url: string | null;
@@ -737,6 +781,7 @@ export interface MusicQuizTitleRevealConfig extends MusicQuizSharedConfig {
   answer_duration: number;
   hint_speed: MusicQuizHintSpeed;
   typo_tolerance: MusicQuizTypoTolerance;
+  artist_bonus_mode: MusicQuizTitleRevealArtistBonusMode;
   source_uris: string[];
   name?: string;
 }

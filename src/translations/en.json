@@ -2001,6 +2001,17 @@
             "title_reveal_points": "+{0} points",
             "title_reveal_solved_players": "Guessed",
             "title_reveal_not_solved": "You didn't guess the title this round",
+            "title_reveal_first_bonus": "First! +{0}",
+            "title_reveal_first_bonus_result": "First correct guess",
+            "title_reveal_artist_bonus_setting": "Artist bonus",
+            "title_reveal_artist_bonus_setting_help": "After guessing the title, players get one try at the artist for bonus points.",
+            "title_reveal_artist_bonus_label": "Bonus: who is the artist?",
+            "title_reveal_artist_bonus_help": "One try for extra points.",
+            "title_reveal_artist_placeholder": "Type the artist…",
+            "title_reveal_artist_skip": "Skip",
+            "title_reveal_artist_correct": "{0} is right! +{1}",
+            "title_reveal_artist_wrong": "Not quite, it was {0}",
+            "title_reveal_artist_skipped": "Skipped, it was {0}",
             "landing_continue": "Continue"
         },
         "ai_radio": {
