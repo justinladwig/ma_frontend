@@ -335,6 +335,19 @@ const playerRoundScoreLabel = computed(() =>
 const playerRoundResults = computed<MusicQuizRoundResult[]>(() => {
   const currentState = activeState.value;
   if (!currentState || currentState.phase !== "reveal") return [];
+  // hint-text players have no single locked answer, only whether they solved it
+  if (currentState.answer_type === "hint_text") {
+    const { solved, points } = currentState.you;
+    if (solved === undefined) return [];
+    return [
+      {
+        key: "answer",
+        label: $t("providers.music_quiz.round_result_answer"),
+        correct: solved,
+        points: points ?? 0,
+      },
+    ];
+  }
   const answer = currentState.you.answer;
   if (!answer) return [];
   // "bonuses" is required on timeline answers, unlike the optional bonus_results
