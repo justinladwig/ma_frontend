@@ -117,6 +117,23 @@ describe("hint-text adapters", () => {
     wrapper.unmount();
   });
 
+  it("clears an unsent guess when the next round starts", async () => {
+    const wrapper = mount(HintTextPlayerAnswer, {
+      props: { state: playerState(), currentRound, busy: false },
+    });
+
+    await wrapper.get("[data-testid='hint-text-input']").setValue("hey ju");
+    await wrapper.setProps({
+      currentRound: { ...currentRound, round_index: 1 },
+    });
+
+    expect(
+      wrapper.get<HTMLInputElement>("[data-testid='hint-text-input']").element
+        .value,
+    ).toBe("");
+    wrapper.unmount();
+  });
+
   it("does not submit an empty guess or one without guesses left", async () => {
     const wrapper = mount(HintTextPlayerAnswer, {
       props: {

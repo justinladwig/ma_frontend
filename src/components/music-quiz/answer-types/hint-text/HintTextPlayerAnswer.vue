@@ -132,7 +132,7 @@ import type {
 import { getMusicQuizRoundPlayers } from "@/helpers/music_quiz";
 import { $t } from "@/plugins/i18n";
 import { PartyPopper, Send, Trophy, X } from "@lucide/vue";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 // mirrors the server-side guess limits in answer_types/hint_text.py
 const MAX_GUESS_LENGTH = 200;
@@ -148,6 +148,14 @@ const props =
 const emit = defineEmits<MusicQuizPlayerAnswerAdapterEmits<"hint_text">>();
 
 const guess = ref("");
+
+// the component outlives its rounds, so a half-typed guess must not leak into the next song
+watch(
+  () => props.currentRound.round_index,
+  () => {
+    guess.value = "";
+  },
+);
 const inputRef = ref<InstanceType<typeof Input> | null>(null);
 
 const roundPlayerStatuses = computed(() =>
