@@ -15,6 +15,8 @@ export interface MusicQuizHintTextCell {
 export type MusicQuizHintTextWord = MusicQuizHintTextCell[];
 
 const WORD_SEPARATOR = " ";
+// mirrors MAX_GUESS_LENGTH in the server's answer_types/hint_text.py
+export const MUSIC_QUIZ_HINT_TEXT_MAX_GUESS_LENGTH = 200;
 
 /**
  * Split a hint mask into words so a title only wraps between words.
@@ -58,9 +60,18 @@ export function getMusicQuizHintSpeedOptions(): {
   label: string;
 }[] {
   return [
-    { value: "slow", label: $t("providers.music_quiz.hint_speed_slow") },
-    { value: "normal", label: $t("providers.music_quiz.hint_speed_normal") },
-    { value: "fast", label: $t("providers.music_quiz.hint_speed_fast") },
+    {
+      value: "slow",
+      label: $t("providers.music_quiz.title_reveal_hint_speed_slow"),
+    },
+    {
+      value: "normal",
+      label: $t("providers.music_quiz.title_reveal_hint_speed_normal"),
+    },
+    {
+      value: "fast",
+      label: $t("providers.music_quiz.title_reveal_hint_speed_fast"),
+    },
   ];
 }
 
@@ -71,15 +82,15 @@ export function getMusicQuizTypoToleranceOptions(): {
   return [
     {
       value: "strict",
-      label: $t("providers.music_quiz.typo_tolerance_strict"),
+      label: $t("providers.music_quiz.title_reveal_typo_tolerance_strict"),
     },
     {
       value: "normal",
-      label: $t("providers.music_quiz.typo_tolerance_normal"),
+      label: $t("providers.music_quiz.title_reveal_typo_tolerance_normal"),
     },
     {
       value: "lenient",
-      label: $t("providers.music_quiz.typo_tolerance_lenient"),
+      label: $t("providers.music_quiz.title_reveal_typo_tolerance_lenient"),
     },
   ];
 }

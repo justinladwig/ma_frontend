@@ -397,9 +397,6 @@ export interface MusicQuizHintTextPlayerLastAnswer {
   correct: boolean;
   // total including the first-guess and artist bonuses
   points: number;
-  first_bonus: number;
-  artist_correct: boolean;
-  attempt_count: number;
 }
 
 export type MusicQuizPlayerLastAnswer =
@@ -642,9 +639,7 @@ export interface MusicQuizHintTextRound extends MusicQuizRoundBase {
   mask: MusicQuizHintTextMask;
   revealed_count: number;
   hint_count: number;
-  next_hint_at: number | null;
   allowed_typos: number;
-  solved_count: number;
   artist_bonus: boolean;
   solution?: string;
 }

@@ -39,7 +39,7 @@
 
       <Field>
         <FieldLabel for="quiz-hint-speed">
-          {{ $t("providers.music_quiz.hint_speed") }}
+          {{ $t("providers.music_quiz.title_reveal_hint_speed") }}
         </FieldLabel>
         <Select v-model="hintSpeed">
           <SelectTrigger id="quiz-hint-speed" class="w-full">
@@ -59,7 +59,7 @@
 
       <Field>
         <FieldLabel for="quiz-typo-tolerance">
-          {{ $t("providers.music_quiz.typo_tolerance") }}
+          {{ $t("providers.music_quiz.title_reveal_typo_tolerance") }}
         </FieldLabel>
         <Select v-model="typoTolerance">
           <SelectTrigger id="quiz-typo-tolerance" class="w-full">

@@ -16,7 +16,7 @@
       id="hint-text-artist-guess"
       ref="inputRef"
       v-model="guess"
-      :maxlength="MAX_GUESS_LENGTH"
+      :maxlength="MUSIC_QUIZ_HINT_TEXT_MAX_GUESS_LENGTH"
       :placeholder="$t('providers.music_quiz.title_reveal_artist_placeholder')"
       autocomplete="off"
       autocorrect="off"
@@ -68,12 +68,10 @@ import type {
   MusicQuizHintTextArtistBonus,
   MusicQuizHintTextSubmission,
 } from "@/composables/music-quiz/useMusicQuiz";
+import { MUSIC_QUIZ_HINT_TEXT_MAX_GUESS_LENGTH } from "@/helpers/music_quiz_hint_text";
 import { $t } from "@/plugins/i18n";
 import { Check, Mic, Send, X } from "@lucide/vue";
 import { computed, onMounted, ref } from "vue";
-
-// mirrors the server-side guess limit in answer_types/hint_text.py
-const MAX_GUESS_LENGTH = 200;
 
 const props = defineProps<{
   bonus: MusicQuizHintTextArtistBonus;

@@ -38,7 +38,7 @@
           id="hint-text-guess"
           ref="inputRef"
           v-model="guess"
-          :maxlength="MAX_GUESS_LENGTH"
+          :maxlength="MUSIC_QUIZ_HINT_TEXT_MAX_GUESS_LENGTH"
           :placeholder="
             $t('providers.music_quiz.title_reveal_guess_placeholder')
           "
@@ -130,12 +130,11 @@ import type {
   MusicQuizTitleRevealRound,
 } from "@/composables/music-quiz/useMusicQuiz";
 import { getMusicQuizRoundPlayers } from "@/helpers/music_quiz";
+import { MUSIC_QUIZ_HINT_TEXT_MAX_GUESS_LENGTH } from "@/helpers/music_quiz_hint_text";
 import { $t } from "@/plugins/i18n";
 import { PartyPopper, Send, Trophy, X } from "@lucide/vue";
 import { computed, ref, watch } from "vue";
 
-// mirrors the server-side guess limits in answer_types/hint_text.py
-const MAX_GUESS_LENGTH = 200;
 const ATTEMPTS_LEFT_WARNING_THRESHOLD = 5;
 
 const props =

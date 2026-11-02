@@ -23,10 +23,8 @@ const currentRound = {
   mask: ["H", null, null, " ", null, null, null, "!"],
   revealed_count: 1,
   hint_count: 4,
-  next_hint_at: Date.now() / 1000 + 5,
   allowed_typos: 1,
   artist_bonus: false,
-  solved_count: 1,
 } satisfies MusicQuizTitleRevealRound;
 
 function playerState(
