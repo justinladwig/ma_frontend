@@ -80,7 +80,7 @@
 
     <ul
       v-if="wrongGuesses.length"
-      class="flex flex-col gap-1"
+      class="m-0 flex list-none flex-col gap-1 p-0"
       :aria-label="$t('providers.music_quiz.title_reveal_your_guesses')"
     >
       <li

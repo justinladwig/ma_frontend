@@ -14,7 +14,9 @@
         'min-h-0 flex-1 overflow-y-auto overscroll-contain': scrollable,
       }"
     >
-      <ul class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2">
+      <ul
+        class="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2 p-0"
+      >
         <li v-for="player in orderedStatuses" :key="player.name">
           <MusicQuizPlayerTile :name="player.name">
             <template #trailing>
